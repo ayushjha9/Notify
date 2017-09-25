@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ public class NotifyOfflineDbHandler {
     private static final String DATABASE_NAME = "wllDB3";
     //table name
 
-    private static final String TABLE_WAYPTS = "waypoints";
+    private static final String TABLE_NOTES = "waypoints";
 
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
@@ -49,18 +48,18 @@ public class NotifyOfflineDbHandler {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_WAYPTS_TABLE = "CREATE TABLE " + TABLE_WAYPTS + "( "
+        String CREATE_NOTES_TABLE = "CREATE TABLE " + TABLE_NOTES + "( "
                 + KEY_ID + " TEXT PRIMARY KEY, " + KEY_NAME + " TEXT,"
                 + KEY_LATLON + " TEXT," + KEY_LATLON1 + " TEXT," + KEY_PLACEBEARING + " TEXT," + KEY_PLACEDIST + " TEXT,"+ KEY_PLACENAME + " TEXT,"
                 + KEY_PLACELAT + " TEXT,"+KEY_PLACELON+" TEXT," + KEY_PLACENAME1 +" TEXT," + KEY_PLACELAT1+" TEXT,"+KEY_PLACELON1+" TEXT," + KEY_PLACEBEARING1 +" TEXT,"+ KEY_FORMAT+" TEXT"+
                 ")";
 
-        db.execSQL(CREATE_WAYPTS_TABLE);
+        db.execSQL(CREATE_NOTES_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WAYPTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
         onCreate(db);
     }
 
@@ -88,14 +87,14 @@ public class NotifyOfflineDbHandler {
         values.put(KEY_PLACEBEARING1, note.getPlaceBearing1());
         values.put(KEY_FORMAT, note.getFormat());
 
-        db.insertWithOnConflict(TABLE_WAYPTS, null, values,0);
+        db.insertWithOnConflict(TABLE_NOTES, null, values,0);
         db.close();
     }
 
     Note getNote(String id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_WAYPTS, new String[] { KEY_ID,
+        Cursor cursor = db.query(TABLE_NOTES, new String[] { KEY_ID,
                         KEY_NAME, KEY_LATLON,KEY_LATLON1,KEY_PLACEBEARING,KEY_PLACEDIST,KEY_PLACENAME,KEY_PLACELAT,KEY_PLACELON,KEY_PLACENAME1,KEY_PLACELAT1,KEY_PLACELON1,KEY_PLACEBEARING1,KEY_FORMAT}, KEY_ID + "=?",
                 new String[] { String.valueOf(id)}, null, null,null,null);
         if (cursor != null) {
@@ -113,7 +112,7 @@ public class NotifyOfflineDbHandler {
 
     public List<Note> getAllNotes() {
         List<Note> noteList = new ArrayList<note>();
-        String selectQuery = "SELECT * FROM " + TABLE_WAYPTS +" ORDER BY id asc";
+        String selectQuery = "SELECT * FROM " + TABLE_NOTES +" ORDER BY id asc";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -143,7 +142,7 @@ public class NotifyOfflineDbHandler {
         return noteList;
     }
 
-    public int updatenote(Note note, String strId){
+    public int updateNote(Note note, String strId){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -164,10 +163,10 @@ public class NotifyOfflineDbHandler {
         values.put(KEY_PLACEBEARING1,note.getPlaceBearing1());
         values.put(KEY_FORMAT,note.getFormat());
 
-        int id = (int) db.insertWithOnConflict(TABLE_WAYPTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+        int id = (int) db.insertWithOnConflict(TABLE_NOTES, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 
         if (id == -1) {
-            return db.update(TABLE_WAYPTS, values, "_id=?", new String[] {strId});  // number 1 is the _id here, update to variable for your code
+            return db.update(TABLE_NOTES, values, "_id=?", new String[] {strId});  // number 1 is the _id here, update to variable for your code
         }
 
         return 0;
@@ -175,14 +174,14 @@ public class NotifyOfflineDbHandler {
 
     }
 
-    public void deletenote(Note note){
+    public void deleteNote(Note note){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_WAYPTS, KEY_ID + " =?", new String[] { note.getID()});
+        db.delete(TABLE_NOTES, KEY_ID + " =?", new String[] { note.getID()});
         db.close();
     }
 
-    public int getnoteCount(){
-        String countQuery = "SELECT * FROM "+ TABLE_WAYPTS;
+    public int getNoteCount(){
+        String countQuery = "SELECT * FROM "+ TABLE_NOTES;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         int count = cursor.getCount();
@@ -201,5 +200,3 @@ public class NotifyOfflineDbHandler {
     }
 }
 
-
-}
