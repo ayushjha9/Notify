@@ -17,27 +17,14 @@ import java.util.List;
 public class NotifyOfflineDbHandler {
     private static final int DATABASE_VERSION = 1;
     //DB Name
-    private static final String DATABASE_NAME = "wllDB3";
+    private static final String DATABASE_NAME = "nDB";
     //table name
 
-    private static final String TABLE_NOTES = "waypoints";
+    private static final String TABLE_NOTES = "notes";
 
     private static final String KEY_ID = "id";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_LATLON = "latlon";
-    private static final String KEY_LATLON1 = "latlon1";
+    private static final String KEY_NOTESTRING = "name";
 
-    private static final String KEY_PLACEBEARING = "placeBearing";
-    private static final String KEY_PLACEDIST = "placeDist";
-    private static final String KEY_PLACENAME = "placeName";
-    private static final String KEY_PLACELAT ="placeLat";
-    private static final String KEY_PLACELON = "placeLon";
-
-    private static final String KEY_PLACENAME1 = "placeName1";
-    private static final String KEY_PLACELAT1 ="placeLat1";
-    private static final String KEY_PLACELON1 = "placeLon1";
-    private static final String KEY_PLACEBEARING1 = "placeBearing1";
-    private static final String KEY_FORMAT = "format";
     public static NotifyOfflineDbHandler mInstance = null;
 
 
@@ -49,9 +36,8 @@ public class NotifyOfflineDbHandler {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_NOTES_TABLE = "CREATE TABLE " + TABLE_NOTES + "( "
-                + KEY_ID + " TEXT PRIMARY KEY, " + KEY_NAME + " TEXT,"
-                + KEY_LATLON + " TEXT," + KEY_LATLON1 + " TEXT," + KEY_PLACEBEARING + " TEXT," + KEY_PLACEDIST + " TEXT,"+ KEY_PLACENAME + " TEXT,"
-                + KEY_PLACELAT + " TEXT,"+KEY_PLACELON+" TEXT," + KEY_PLACENAME1 +" TEXT," + KEY_PLACELAT1+" TEXT,"+KEY_PLACELON1+" TEXT," + KEY_PLACEBEARING1 +" TEXT,"+ KEY_FORMAT+" TEXT"+
+                + KEY_ID + " TEXT PRIMARY KEY, " + KEY_NOTESTRING
+                +" TEXT"+
                 ")";
 
         db.execSQL(CREATE_NOTES_TABLE);
@@ -71,22 +57,7 @@ public class NotifyOfflineDbHandler {
 
         ContentValues values = new ContentValues();
         values.put(KEY_ID, note.getID());
-        values.put(KEY_NAME, note.getName());
-        values.put(KEY_LATLON, note.getLat());
-        values.put(KEY_LATLON1, note.getLon());
-
-        values.put(KEY_PLACEBEARING, note.getPlaceBearing());
-        values.put(KEY_PLACEDIST, note.getPlaceDistance());
-        values.put(KEY_PLACENAME, note.getPlaceName());
-        values.put(KEY_PLACELAT, note.getPlaceLat());
-        values.put(KEY_PLACELON, note.getPlaceLon());
-
-        values.put(KEY_PLACENAME1, note.getPlaceName1());
-        values.put(KEY_PLACELAT1, note.getPlaceLat1());
-        values.put(KEY_PLACELON1, note.getPlaceLon1());
-        values.put(KEY_PLACEBEARING1, note.getPlaceBearing1());
-        values.put(KEY_FORMAT, note.getFormat());
-
+        values.put(KEY_NOTESTRING, note.getNoteString());
         db.insertWithOnConflict(TABLE_NOTES, null, values,0);
         db.close();
     }
@@ -95,7 +66,7 @@ public class NotifyOfflineDbHandler {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_NOTES, new String[] { KEY_ID,
-                        KEY_NAME, KEY_LATLON,KEY_LATLON1,KEY_PLACEBEARING,KEY_PLACEDIST,KEY_PLACENAME,KEY_PLACELAT,KEY_PLACELON,KEY_PLACENAME1,KEY_PLACELAT1,KEY_PLACELON1,KEY_PLACEBEARING1,KEY_FORMAT}, KEY_ID + "=?",
+                        KEY_NOTESTRING}, KEY_ID + "=?",
                 new String[] { String.valueOf(id)}, null, null,null,null);
         if (cursor != null) {
             cursor.moveToFirst();
@@ -103,7 +74,7 @@ public class NotifyOfflineDbHandler {
 
         if(cursor.getCount()>0) {
 
-            Note note = new Note((cursor.getString(0)), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9),cursor.getString(10),cursor.getString(11),cursor.getString(12), cursor.getString(13));
+            Note note = new Note((cursor.getString(0)), cursor.getString(1));
 
             return note;
         }
@@ -121,19 +92,7 @@ public class NotifyOfflineDbHandler {
             do {
                 Note note = new Note();
                 note.setID(cursor.getString(0));
-                note.setName(cursor.getString(1));
-                note.setLat(cursor.getString(2));
-                note.setLon(cursor.getString(3));
-                note.setPlaceBearing(cursor.getString(4));
-                note.setPlaceDistance(cursor.getString(5));
-                note.setPlaceName(cursor.getString(6));
-                note.setPlaceLat(cursor.getString(7));
-                note.setPlaceLon(cursor.getString(8));
-                note.setPlaceName1(cursor.getString(9));
-                note.setPlaceLat1(cursor.getString(10));
-                note.setPlaceLon1(cursor.getString(11));
-                note.setPlaceBearing1(cursor.getString(12));
-                note.setFormat(cursor.getString(13));
+                note.setNoteString(cursor.getString(1));
 
                 noteList.add(note);
             } while (cursor.moveToNext());
@@ -147,21 +106,8 @@ public class NotifyOfflineDbHandler {
 
         ContentValues values = new ContentValues();
         values.put(KEY_ID, note.getID());
-        values.put(KEY_NAME, note.getName());
-        values.put(KEY_LATLON, note.getLat());
-        values.put(KEY_LATLON1, note.getLon());
+        values.put(KEY_NOTESTRING, note.getNoteString();
 
-        values.put(KEY_PLACEBEARING,note.getPlaceBearing());
-        values.put(KEY_PLACEDIST,note.getPlaceDistance());
-        values.put(KEY_PLACENAME, note.getPlaceName());
-        values.put(KEY_PLACELAT, note.getPlaceLat());
-        values.put(KEY_PLACELON, note.getPlaceLon());
-
-        values.put(KEY_PLACENAME1,note.getPlaceName1());
-        values.put(KEY_PLACELAT1,note.getPlaceLat1());
-        values.put(KEY_PLACELON1,note.getPlaceLon1());
-        values.put(KEY_PLACEBEARING1,note.getPlaceBearing1());
-        values.put(KEY_FORMAT,note.getFormat());
 
         int id = (int) db.insertWithOnConflict(TABLE_NOTES, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 
@@ -198,5 +144,7 @@ public class NotifyOfflineDbHandler {
         }
         return mInstance;
     }
+
+
 }
 
